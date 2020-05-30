@@ -72,7 +72,7 @@
   async function initializeCamera(frontFace = useFrontCamera) {
     constraints.video.facingMode = useFrontCamera
       ? "user"
-      : { ideal: "environment" };
+      : { exact: "environment" };
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
