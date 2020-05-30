@@ -12,6 +12,7 @@
   const btnPlay = document.querySelector("#btnPlay");
   const btnPause = document.querySelector("#btnPause");
   const btnScreenshot = document.querySelector("#btnScreenshot");
+  const btnChangeCamera = document.querySelector("#btnChangeCamera");
   const screenshotsContainer = document.querySelector("#screenshots");
   const canvas = document.querySelector("#canvas");
   const devicesSelect = document.querySelector("#devicesSelect");
@@ -31,6 +32,9 @@
       },
     },
   };
+
+  // use front face camera
+  const useFrontCamera = true;
 
   // handle events
   // play
@@ -57,8 +61,15 @@
     screenshotsContainer.prepend(img);
   });
 
+  // switch camera
+  btnChangeCamera.addEventListener("click", function () {
+    useFrontCamera = !useFrontCamera;
+
+    initializeCamera(null, useFrontCamera);
+  });
+
   // initialize
-  function initializeCamera(deviceId = null, frontFace = true) {
+  function initializeCamera(deviceId = null, frontFace = useFrontCamera) {
     if (deviceId) {
       constraints.video.deviceId = deviceId;
     }
@@ -70,7 +81,7 @@
     navigator.mediaDevices
       .getUserMedia(constraints)
       .then(function (stream) {
-        navigator.mediaDevices.enumerateDevices().then(function (devices) {
+        /* navigator.mediaDevices.enumerateDevices().then(function (devices) {
           const options = devices
             .filter((device) => device.kind === "videoinput")
             .map((device) => {
@@ -82,7 +93,7 @@
             });
 
           devicesSelect.append(...options);
-        });
+        }); */
 
         video.srcObject = stream;
       })
