@@ -36,6 +36,9 @@
   // use front face camera
   let useFrontCamera = true;
 
+  // current video stream
+  let videoStream;
+
   // handle events
   // play
   btnPlay.addEventListener("click", function () {
@@ -51,7 +54,7 @@
     btnPlay.classList.remove("is-hidden");
   });
 
-  // screenshot
+  // take screenshot
   btnScreenshot.addEventListener("click", function () {
     const img = document.createElement("img");
     canvas.width = video.videoWidth;
@@ -65,18 +68,26 @@
   btnChangeCamera.addEventListener("click", function () {
     useFrontCamera = !useFrontCamera;
 
-    initializeCamera(useFrontCamera);
+    initializeCamera();
   });
 
+  // stop video stream
+  function stopVideoStream() {
+    if (videoStream) {
+      videoStream.getTracks().forEach((track) => {
+        track.stop();
+      });
+    }
+  }
+
   // initialize
-  async function initializeCamera(frontFace = useFrontCamera) {
-    constraints.video.facingMode = useFrontCamera
-      ? "user"
-      : { exact: "environment" };
+  async function initializeCamera() {
+    stopVideoStream();
+    constraints.video.facingMode = useFrontCamera ? "user" : "environment";
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      video.srcObject = stream;
+      videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+      video.srcObject = videoStream;
     } catch (err) {
       alert("Could not access the camera");
     }
