@@ -34,7 +34,7 @@
   };
 
   // use front face camera
-  const useFrontCamera = true;
+  let useFrontCamera = true;
 
   // handle events
   // play
