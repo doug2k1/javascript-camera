@@ -65,27 +65,21 @@
   btnChangeCamera.addEventListener("click", function () {
     useFrontCamera = !useFrontCamera;
 
-    initializeCamera(null, useFrontCamera);
+    initializeCamera(useFrontCamera);
   });
 
   // initialize
-  function initializeCamera(deviceId = null, frontFace = useFrontCamera) {
-    if (deviceId) {
-      constraints.video.deviceId = deviceId;
-    }
+  async function initializeCamera(frontFace = useFrontCamera) {
+    constraints.video.facingMode = useFrontCamera
+      ? "user"
+      : { ideal: "environment" };
 
-    if (!frontFace) {
-      constraints.video.facingMode = { exact: "environment" };
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      video.srcObject = stream;
+    } catch (err) {
+      alert("Could not access the camera");
     }
-
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then(function (stream) {
-        video.srcObject = stream;
-      })
-      .catch(function () {
-        alert("You didn't allow the page to access your camera");
-      });
   }
 
   initializeCamera();
