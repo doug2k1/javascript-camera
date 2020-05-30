@@ -81,20 +81,6 @@
     navigator.mediaDevices
       .getUserMedia(constraints)
       .then(function (stream) {
-        /* navigator.mediaDevices.enumerateDevices().then(function (devices) {
-          const options = devices
-            .filter((device) => device.kind === "videoinput")
-            .map((device) => {
-              const option = document.createElement("option");
-              option.value = device.deviceId;
-              option.text = device.label;
-
-              return option;
-            });
-
-          devicesSelect.append(...options);
-        }); */
-
         video.srcObject = stream;
       })
       .catch(function () {
