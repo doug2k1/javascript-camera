@@ -14,6 +14,7 @@
   const btnScreenshot = document.querySelector("#btnScreenshot");
   const screenshotsContainer = document.querySelector("#screenshots");
   const canvas = document.querySelector("#canvas");
+  const devicesSelect = document.querySelector("#devicesSelect");
 
   // video constraints
   const constraints = {
@@ -31,7 +32,7 @@
     },
   };
 
-  // button events
+  // handle events
   // play
   btnPlay.addEventListener("click", function () {
     video.play();
@@ -56,17 +57,39 @@
     screenshotsContainer.prepend(img);
   });
 
-  // get media device
-  navigator.mediaDevices
-    .getUserMedia(constraints)
-    .then(function (stream) {
-      navigator.mediaDevices.enumerateDevices().then(function (devices) {
-        console.log(devices);
-      });
+  // initialize
+  function initializeCamera(deviceId = null, frontFace = true) {
+    if (deviceId) {
+      constraints.video.deviceId = deviceId;
+    }
 
-      video.srcObject = stream;
-    })
-    .catch(function () {
-      alert("You didn't allow the page to access your camera");
-    });
+    if (!frontFace) {
+      constraints.video.facingMode = { exact: "environment" };
+    }
+
+    navigator.mediaDevices
+      .getUserMedia(constraints)
+      .then(function (stream) {
+        navigator.mediaDevices.enumerateDevices().then(function (devices) {
+          const options = devices
+            .filter((device) => device.kind === "videoinput")
+            .map((device) => {
+              const option = document.createElement("option");
+              option.value = device.deviceId;
+              option.text = device.label;
+
+              return option;
+            });
+
+          devicesSelect.append(...options);
+        });
+
+        video.srcObject = stream;
+      })
+      .catch(function () {
+        alert("You didn't allow the page to access your camera");
+      });
+  }
+
+  initializeCamera();
 })();
