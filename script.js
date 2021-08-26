@@ -34,7 +34,7 @@
   };
 
   // use front face camera
-  let useFrontCamera = true;
+  let useFrontCamera = false;
 
   // current video stream
   let videoStream;
